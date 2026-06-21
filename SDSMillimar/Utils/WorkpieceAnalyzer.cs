@@ -12,6 +12,7 @@ namespace SDSMillimar.Utils
     {
         private readonly double _samplePeriod;
         private readonly double _fs;
+        private readonly OilGrooveWorkpieceFilter _oilGrooveFilter = new OilGrooveWorkpieceFilter();
 
         public WorkpieceAnalyzer(double samplePeriod = 0.012)
         {
@@ -104,7 +105,7 @@ namespace SDSMillimar.Utils
         }
 
         /// 计算直径
-        public double CalculateDiameter(double[] dataA, double[] dataB, double baseDiameter, double compensationValue, string ParamValue)
+        public double CalculateDiameter(double[] dataA, double[] dataB, double baseDiameter, double compensationValue, string ParamValue, bool enableOilGrooveFilter = false)
         {
             var filteredA = Preprocess(dataA);
             var filteredB = Preprocess(dataB);
@@ -118,17 +119,17 @@ namespace SDSMillimar.Utils
             {
                 compensated[i] = (filteredA[i] + filteredB[i]) / 2.0;
             }
+
+            if (enableOilGrooveFilter)
+            {
+                compensated = _oilGrooveFilter.RemoveGrooveSegments(ParamValue + "直径", compensated);
+            }
+
             double max, min;
             // 排除前N个最大值和最小值
             int excludeCount = GlobalSession.Instance.ExcludeCount;
-            if (excludeCount > 0)
+            if (excludeCount > 0 && compensated.Length > excludeCount * 2)
             {
-
-                if (compensated.Length <= excludeCount * 2)
-                {
-                    AppLog.ProcessData.Info($"数据量不足，无法排除 {excludeCount} 个最大值和最小值");
-                }
-
                 var validData = compensated
                     .OrderBy(x => x)
                     .Skip(excludeCount)                    // 去掉最小N个
@@ -140,6 +141,11 @@ namespace SDSMillimar.Utils
             }
             else
             {
+                if (excludeCount > 0)
+                {
+                    AppLog.ProcessData.Info($"数据量不足，无法排除 {excludeCount} 个最大值和最小值");
+                }
+
                 max = compensated.Max();
                 min = compensated.Min();
             }
@@ -151,16 +157,21 @@ namespace SDSMillimar.Utils
         }
 
         /// 计算径向跳动
-        public double CalculateRunout(double[] data, string ParamValue)
+        public double CalculateRunout(double[] data, string ParamValue, bool enableOilGrooveFilter = false)
         {
             var filtered = Preprocess(data);
+
+            if (enableOilGrooveFilter)
+            {
+                filtered = _oilGrooveFilter.RemoveGrooveSegments(ParamValue + "跳动", filtered);
+            }
 
             AppLog.ProcessData.Info($"{ParamValue} 过滤后数据 -> {string.Join(",", filtered.Select(p => p.ToString("F5")))}");
             return filtered.Max() - filtered.Min();
         }
 
         /// 计算圆度
-        public double CalculateRoundness(double[] dataA, double[] dataB, string ParamValue)
+        public double CalculateRoundness(double[] dataA, double[] dataB, string ParamValue, bool enableOilGrooveFilter = false)
         {
             var filteredA = Preprocess(dataA);
             var filteredB = Preprocess(dataB);
@@ -173,6 +184,11 @@ namespace SDSMillimar.Utils
 
             for (int i = 0; i < n; i++)
                 compensated[i] = (filteredA[i] + filteredB[i]) / 2.0;
+
+            if (enableOilGrooveFilter)
+            {
+                compensated = _oilGrooveFilter.ReplaceGrooveSegments(ParamValue + "圆度", compensated);
+            }
 
             double[] theta = Generate.LinearSpaced(n, 0, 2 * Math.PI);
 

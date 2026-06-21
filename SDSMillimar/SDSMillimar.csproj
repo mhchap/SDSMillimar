@@ -283,6 +283,7 @@
     <Compile Include="Utils\Messenger.cs" />
     <Compile Include="Utils\MillN1700Helper.cs" />
     <Compile Include="Utils\N1700Lib.cs" />
+    <Compile Include="Utils\OilGrooveWorkpieceFilter.cs" />
     <Compile Include="Utils\PageResult.cs" />
     <Compile Include="Utils\PostgresSqlHelper.cs" />
     <Compile Include="Utils\SPCAnalyse.cs" />

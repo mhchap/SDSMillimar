@@ -1094,6 +1094,7 @@ namespace SDSMillimar.ViewModel
                     {
                         if (points[0].APoints.Count > 0)
                         {
+                            bool enableOilGrooveFilter = GlobalSession.Instance.CurrentSelectedTechnologyDto?.IsOilGroove == 1;
                             //AppLog.ProcessData.Info($"{dto.ParamValue} 原始数据A -> {string.Join(",", points[0].APoints.Select(p => p.Value.ToString("F5")))}");
                             //AppLog.ProcessData.Info($"{dto.ParamValue} 原始数据B -> {string.Join(",", points[0].BPoints.Select(p => p.Value.ToString("F5")))}");
                             switch (dto.MeasureType)
@@ -1109,7 +1110,7 @@ namespace SDSMillimar.ViewModel
                                         var baseValue = ((dto.TargetValue + dto.LowerTolerance) +
                                                          (dto.TargetValue + dto.UpperTolerance)) / 2;
 
-                                        result = workpieceAnalyzer.CalculateDiameter(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), baseValue, dto.CompensationValue, dto.ParamValue);
+                                        result = workpieceAnalyzer.CalculateDiameter(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), baseValue, dto.CompensationValue, dto.ParamValue, enableOilGrooveFilter);
 
                                         if (CheckValue(dto, result))
                                         {
@@ -1167,7 +1168,7 @@ namespace SDSMillimar.ViewModel
                                             MDiameter = _mDiameter;
                                         }
                                         AppLog.Production.Info($"{dto.ParamName}目标值->{MDiameter}->{jzDto.CompensationValue}");
-                                        result = workpieceAnalyzer.CalculateDiameter(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), MDiameter, jzDto.CompensationValue, dto.ParamValue);
+                                        result = workpieceAnalyzer.CalculateDiameter(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), MDiameter, jzDto.CompensationValue, dto.ParamValue, enableOilGrooveFilter);
                                         GlobalSession.Instance.CurrentTechnologyParamDtos[i].TestValue = result - _mDiameter;
                                         // 当合格件时，强制把测量件拉到校准件1μ内
                                         if (jzDto.MeasuredValue != 0 && GlobalSession.Instance.IsPull == 1 && CheckValue(dto, result))
@@ -1180,7 +1181,7 @@ namespace SDSMillimar.ViewModel
                                     }
                                     break;
                                 case 2:
-                                    result = workpieceAnalyzer.CalculateRoundness(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), dto.ParamValue);
+                                    result = workpieceAnalyzer.CalculateRoundness(points[0].APoints.Select(p => p.Value).ToArray(), points[0].BPoints.Select(p => p.Value).ToArray(), dto.ParamValue, enableOilGrooveFilter);
                                     GlobalSession.Instance.CurrentTechnologyParamDtos[i].TestValue = result;
                                     break;
                                 case 3:
@@ -1188,7 +1189,7 @@ namespace SDSMillimar.ViewModel
                                     .CalcCylindricity(points);
                                     break;
                                 case 4:
-                                    result = workpieceAnalyzer.CalculateRunout(points[0].APoints.Select(p => p.Value).ToArray(), dto.ParamValue);
+                                    result = workpieceAnalyzer.CalculateRunout(points[0].APoints.Select(p => p.Value).ToArray(), dto.ParamValue, enableOilGrooveFilter);
 
                                     if (GlobalSession.Instance.IsPull == 1 && CheckValue(dto, result))
                                     {
