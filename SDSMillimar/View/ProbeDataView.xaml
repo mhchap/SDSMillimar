@@ -1,0 +1,137 @@
+﻿<Window
+    x:Class="SDSMillimar.View.ProbeDataView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cm="clr-namespace:SDSMillimar.Common"
+    xmlns:cv="clr-namespace:SDSMillimar.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:SDSMillimar.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Title="设备状态"
+    Width="600"
+    Height="600"
+    Closing="Window_Closing"
+    Closed="Window_Closed"
+    WindowStartupLocation="CenterScreen"
+    mc:Ignorable="d">
+    <Window.Resources>
+        <cv:OffsetToWidthConverter
+            x:Key="OffsetToWidthConverter"
+            MaxWidth="100"
+            MaxValue="2.1" />
+    </Window.Resources>
+    <Grid>
+        <hc:Card
+            Grid.Row="1"
+            Margin="8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <UniformGrid Margin="8" Columns="3">
+                    <Button
+                        Width="100"
+                        Command="{Binding StartTestCommand}"
+                        Content="读取"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding StopTestCommand}"
+                        Content="停止"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonInfo}" />
+
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding GetAllDataCommand}"
+                        Content="标定"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonInfo}" />
+                    <!--<Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding ResetOffsetCommand}"
+                        Content="恢复"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonDanger}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding ZeroDrivceCommand}"
+                        Content="回零"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonDanger}" />-->
+
+                </UniformGrid>
+                <DataGrid
+                    Grid.Row="1"
+                    hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="Column"
+                    ItemsSource="{Binding Source={x:Static cm:GlobalSession.Instance}, Path=Probes}"
+                    RowHeaderWidth="60"
+                    RowHeight="35"
+                    SelectedItem="{Binding SelectedData, Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding Id}" Header="通道编号" />
+                        <DataGridTextColumn Binding="{Binding Title}" Header="设备名称" />
+                        <DataGridTextColumn Binding="{Binding MeasuredValue, StringFormat={}{0:F4}}" Header="测量值(mm)" />
+                        <DataGridTemplateColumn Width="300" IsReadOnly="True">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Border Padding="5" Background="#eeeeee">
+
+                                        <Grid Height="80">
+                                            <Grid.ColumnDefinitions>
+
+                                                <!--  左半区  -->
+
+                                                <ColumnDefinition Width="*" />
+
+                                                <!--  中心线  -->
+
+                                                <ColumnDefinition Width="2" />
+
+                                                <!--  右半区  -->
+
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+
+                                            <!--  中心参考线  -->
+                                            <Border Grid.Column="1" Background="Black" />
+
+                                            <!--  左偏移条  -->
+                                            <Border
+                                                x:Name="LeftBar"
+                                                Grid.Column="0"
+                                                Width="{Binding MeasuredValue, Converter={StaticResource OffsetToWidthConverter}, ConverterParameter=Left}"
+                                                HorizontalAlignment="Right"
+                                                Background="Green" />
+
+                                            <!--  右偏移条  -->
+                                            <Border
+                                                x:Name="RightBar"
+                                                Grid.Column="2"
+                                                Width="{Binding MeasuredValue, Converter={StaticResource OffsetToWidthConverter}, ConverterParameter=Right}"
+                                                HorizontalAlignment="Left"
+                                                Background="Green" />
+
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Grid>
+
+        </hc:Card>
+    </Grid>
+</Window>

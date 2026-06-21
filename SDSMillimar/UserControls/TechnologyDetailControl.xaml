@@ -1,0 +1,136 @@
+﻿<Window
+    x:Class="SDSMillimar.UserControls.TechnologyDetailControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:SDSMillimar.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="clr-namespace:SDSMillimar.Utils"
+    Width="600"
+    hc:Dialog.Token="{x:Static tk:DialogTokens.TechnologyDetailView}"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <hc:DialogContainer Effect="{StaticResource EffectShadow2}">
+        <hc:SimplePanel Height="auto">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Border
+                    Padding="5"
+                    Panel.ZIndex="-1"
+                    Background="{DynamicResource PrimaryBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        Foreground="White"
+                        Text="{Binding TitleText}" />
+                </Border>
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="20,16,17,10"
+                    hc:TitleElement.TitleWidth="168">
+                    <hc:ComboBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.Placeholder="输入零件编号模糊匹配"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="选择零件"
+                        hc:TitleElement.TitlePlacement="Left"
+                        AutoComplete="True"
+                        DisplayMemberPath="ProductName"
+                        IsEditable="True"
+                        ItemsSource="{Binding Products}"
+                        SelectedItem="{Binding SelectedProduct, Mode=TwoWay}"
+                        SelectedValue="{Binding TechnologyInfo.ProductId}"
+                        SelectedValuePath="Id" />
+                    <hc:ComboBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.Placeholder="选择工艺类型"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="工艺类型"
+                        hc:TitleElement.TitlePlacement="Left"
+                        AutoComplete="True"
+                        DisplayMemberPath="Name"
+                        IsEditable="True"
+                        ItemsSource="{Binding TechnologyTypes}"
+                        SelectedItem="{Binding SelectedTechnologyType}"
+                        SelectedValue="{Binding TechnologyInfo.TechnologyType, Mode=TwoWay}"
+                        SelectedValuePath="Id" />
+                    <!--<TextBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.Placeholder="请输入工艺编号"
+                        hc:TitleElement.Title="工艺编号"
+                        hc:TitleElement.TitlePlacement="Left"
+                        IsEnabled="{Binding IsAdd}"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding TechnologyInfo.TechnologyCode, Mode=TwoWay}" />-->
+                    <TextBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.Placeholder="请输入工艺名称"
+                        hc:TitleElement.Title="工艺名称"
+                        hc:TitleElement.TitlePlacement="Left"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding TechnologyInfo.TechnologyName, Mode=TwoWay}" />
+                    <hc:ComboBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Necessary="True"
+                        hc:InfoElement.Placeholder="选择是否开启油槽过滤"
+                        hc:InfoElement.ShowClearButton="True"
+                        hc:InfoElement.Title="油槽过滤"
+                        hc:TitleElement.TitlePlacement="Left"
+                        AutoComplete="True"
+                        DisplayMemberPath="Name"
+                        IsEditable="True"
+                        ItemsSource="{Binding OilGrooveDatas}"
+                        SelectedValue="{Binding TechnologyInfo.IsOilGroove, Mode=TwoWay}"
+                        SelectedValuePath="Id" />
+                    <TextBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Placeholder="请输入备注"
+                        hc:TitleElement.Title="备注"
+                        hc:TitleElement.TitlePlacement="Left"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding TechnologyInfo.Remark, Mode=TwoWay}" />
+                    <!--<Button
+                        Width="100"
+                        Command="{Binding SelectProbeCommand}"
+                        Content="选择探针"
+                        Style="{StaticResource ButtonPrimary}" />-->
+
+
+
+
+                </StackPanel>
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="20"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="100"
+                        Command="{Binding SubmitCommand}"
+                        Content="提交"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <!--<Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding ClosedCommand}"
+                        Content="关闭"
+                        Style="{StaticResource ButtonInfo}" />-->
+                </StackPanel>
+            </Grid>
+        </hc:SimplePanel>
+    </hc:DialogContainer>
+</Window>

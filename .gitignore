@@ -1,0 +1,15 @@
+.vs/
+.build-validation/
+bin/
+obj/
+**/bin/
+**/obj/
+*.user
+*.suo
+*.cache
+*.log
+*.pdb
+*.mdb
+*.nupkg
+packages/
+TestResults/

@@ -1,0 +1,315 @@
+﻿<Window
+    x:Class="SDSMillimar.View.TechnologyView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cm="clr-namespace:SDSMillimar.Common"
+    xmlns:cv="clr-namespace:SDSMillimar.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:SDSMillimar.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="clr-namespace:SDSMillimar.Utils"
+    xmlns:utils="clr-namespace:SDSMillimar.Utils"
+    xmlns:vm="clr-namespace:SDSMillimar.ViewModel"
+    Height="650"
+    hc:Dialog.Token="{x:Static tk:DialogTokens.TechnologyView}"
+    Background="{DynamicResource RegionBrush}"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding ClosedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <vm:TechnologyViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+        <cv:TechnologyTypeConverter x:Key="TechnologyType" />
+        <cv:OilGrooveConverter x:Key="OilGroove" />
+        <cv:MeasureTypeConverter x:Key="MeasureType" />
+        <cv:BoolToMeasureStatusConverter x:Key="MeasureStatus" />
+    </Window.Resources>
+
+    <Grid Margin="5">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <hc:Card
+            Margin="8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Margin="8,0,0,0" HorizontalAlignment="Left">
+                    <hc:TextBox
+                        Width="380"
+                        Height="30"
+                        hc:InfoElement.Placeholder="请输入关键字模糊查询"
+                        hc:InfoElement.Title="关键字"
+                        hc:InfoElement.TitlePlacement="Left"
+                        hc:InfoElement.TitleWidth="auto"
+                        Text="{Binding Keyword}" />
+                </Grid>
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,0,8,0"
+                    Orientation="Horizontal">
+
+                    <Button
+                        Width="100"
+                        Margin="5"
+                        Command="{Binding QueryCommand}"
+                        Content="查询"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="5"
+                        Command="{Binding ResetKeywordCommand}"
+                        Content="重置" />
+                </StackPanel>
+            </Grid>
+
+
+
+        </hc:Card>
+        <hc:Card
+            Grid.Row="1"
+            Margin="8,0,8,0"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Margin="8"
+                    HorizontalAlignment="Left"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="100"
+                        Command="{Binding AddProductedCommand}"
+                        Content="新增工艺"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding AddMItemCommand}"
+                        Content="测量项"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonInfo}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding EditProductedCommand}"
+                        Content="编辑"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonInfo}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding DeleteProductedCommand}"
+                        Content="删除"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonDanger}" />
+                </StackPanel>
+                <DataGrid
+                    Grid.Row="1"
+                    hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="Column"
+                    ItemsSource="{Binding Datas}"
+                    RowHeaderWidth="60"
+                    SelectedItem="{Binding SelectedData, Mode=TwoWay}">
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding ProductName}" Header="零件" />
+                        <!--<DataGridTextColumn Binding="{Binding TechnologyCode}" Header="工艺编号" />-->
+                        <DataGridTextColumn Binding="{Binding TechnologyName}" Header="工艺名称" />
+                        <DataGridTextColumn Binding="{Binding TechnologyType, Converter={StaticResource TechnologyType}}" Header="工艺类型" />
+                        <DataGridTextColumn Binding="{Binding IsOilGroove, Converter={StaticResource OilGroove}}" Header="油槽过滤" />
+                        <!--  是否创建测量项  -->
+                        <DataGridTextColumn Binding="{Binding IsAddParams, Converter={StaticResource MeasureStatus}}" Header="是否创建测量项">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell">
+                                    <!--  默认颜色  -->
+                                    <Setter Property="Foreground" Value="Black" />
+                                    <Setter Property="HorizontalAlignment" Value="Left" />
+                                    <Setter Property="VerticalAlignment" Value="Center" />
+
+                                    <Style.Triggers>
+                                        <!--  IsAddParams == false 时  -->
+                                        <DataTrigger Binding="{Binding IsAddParams}" Value="False">
+                                            <Setter Property="Foreground" Value="Red" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="创建时间" />
+                        <DataGridTextColumn Binding="{Binding UpdateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="修改时间" />
+                        <DataGridTextColumn Binding="{Binding Remark}" Header="备注" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <hc:LoadingCircle Grid.Row="1" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}" />
+            </Grid>
+
+        </hc:Card>
+        <hc:Card
+            Grid.Row="2"
+            Margin="8,0,8,8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <hc:Pagination
+                Margin="8"
+                HorizontalAlignment="Right"
+                IsJumpEnabled="True"
+                MaxPageCount="{Binding MaxPageCount}"
+                PageIndex="{Binding PageIndex}">
+                <hc:Interaction.Triggers>
+                    <hc:EventTrigger EventName="PageUpdated">
+                        <hc:EventToCommand Command="{Binding PageUpdatedCommand}" PassEventArgsToCommand="True" />
+                    </hc:EventTrigger>
+                </hc:Interaction.Triggers>
+            </hc:Pagination>
+        </hc:Card>
+
+        <hc:Drawer
+            Name="DrawerRight"
+            IsOpen="{Binding IsDrawerOpen}"
+            MaskCanClose="False">
+            <Border
+                Width="850"
+                Background="{DynamicResource RegionBrush}"
+                BorderBrush="{DynamicResource BorderBrush}"
+                BorderThickness="0,1,0,0">
+                <Grid>
+                    <hc:Card
+                        Grid.Row="1"
+                        Margin="8"
+                        BorderThickness="0"
+                        Effect="{StaticResource EffectShadow2}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid Margin="8">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock
+                                    Grid.Column="0"
+                                    VerticalAlignment="Center"
+                                    FontSize="20"
+                                    Text="{Binding Title}" />
+
+                                <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                    <Button
+                                        Width="100"
+                                        VerticalAlignment="Center"
+                                        Command="{Binding SaveMItemCommand}"
+                                        Content="保存"
+                                        Style="{StaticResource ButtonPrimary}" />
+                                    <Button
+                                        Width="100"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Command="hc:ControlCommands.Close"
+                                        Content="关闭"
+                                        Style="{StaticResource ButtonDanger}" />
+                                </StackPanel>
+                            </Grid>
+                            <DataGrid
+                                x:Name="ParamGrid"
+                                Grid.Row="1"
+                                hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
+                                AutoGenerateColumns="False"
+                                HeadersVisibility="Column"
+                                ItemsSource="{Binding TechnologyParamDatas}"
+                                RowHeaderWidth="60"
+                                RowHeight="35"
+                                SelectedItem="{Binding SelectedTPData, Mode=TwoWay}">
+                                <DataGrid.Resources>
+
+                                    <utils:BindingProxy x:Key="proxy" Data="{Binding}" />
+
+                                </DataGrid.Resources>
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn
+                                        Binding="{Binding ParamName}"
+                                        Header="参数编号"
+                                        IsReadOnly="True" />
+                                    <DataGridTextColumn
+                                        Binding="{Binding ParamValue}"
+                                        Header="参数名称"
+                                        IsReadOnly="True" />
+                                    <DataGridTextColumn
+                                        Binding="{Binding MeasureType, Converter={StaticResource MeasureType}}"
+                                        Header="测量类型"
+                                        IsReadOnly="True" />
+                                    <DataGridTextColumn
+                                        Binding="{Binding DeviceIds}"
+                                        Header="探针"
+                                        IsReadOnly="True" />
+                                    <DataGridTextColumn Binding="{Binding FilterValue}" Header="过滤值" />
+                                    <!--<DataGridTextColumn Binding="{Binding CompensationValue}" Header="补偿值" />-->
+                                    <DataGridTextColumn Binding="{Binding TargetValue}" Header="目标值" />
+                                    <DataGridTextColumn
+                                        Binding="{Binding UpperTolerance}"
+                                        Header="上公差值"
+                                        IsReadOnly="{Binding Data.ToleranceColumnReadOnly, Source={StaticResource proxy}}" />
+                                    <DataGridTextColumn
+                                        Binding="{Binding LowerTolerance}"
+                                        Header="下公差值"
+                                        IsReadOnly="{Binding Data.ToleranceColumnReadOnly, Source={StaticResource proxy}}" />
+                                    <DataGridComboBoxColumn
+                                        CanUserResize="False"
+                                        DisplayMemberPath="Value"
+                                        Header="是否启用"
+                                        ItemsSource="{Binding Source={x:Static cm:GlobalSession.Instance}, Path=DemoTypes}"
+                                        SelectedValueBinding="{Binding IsDelete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        SelectedValuePath="Key" />
+
+
+                                    <!--<DataGridTextColumn Binding="{Binding Remark}" Header="备注" />-->
+                                    <DataGridTemplateColumn Width="100">
+                                        <DataGridTemplateColumn.CellTemplate>
+                                            <DataTemplate>
+                                                <Button
+                                                    Width="75"
+                                                    Height="25"
+                                                    HorizontalAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    Command="{Binding DataContext.SelectedProbeCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                                    CommandParameter="{Binding}"
+                                                    Content="选择探针"
+                                                    Style="{StaticResource ButtonInfo}" />
+                                            </DataTemplate>
+                                        </DataGridTemplateColumn.CellTemplate>
+                                    </DataGridTemplateColumn>
+                                </DataGrid.Columns>
+                            </DataGrid>
+                        </Grid>
+
+                    </hc:Card>
+                </Grid>
+            </Border>
+        </hc:Drawer>
+    </Grid>
+</Window>

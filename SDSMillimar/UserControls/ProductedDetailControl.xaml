@@ -1,0 +1,80 @@
+﻿<UserControl
+    x:Class="SDSMillimar.UserControls.ProductedDetailControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:SDSMillimar.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="{DynamicResource RegionBrush}"
+    mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <hc:DialogContainer Effect="{StaticResource EffectShadow2}">
+        <hc:SimplePanel Width="600">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                    <RowDefinition Height="auto" />
+                </Grid.RowDefinitions>
+                <Border
+                    Padding="5"
+                    Panel.ZIndex="-1"
+                    Background="{DynamicResource PrimaryBrush}">
+                    <TextBlock
+                        HorizontalAlignment="Left"
+                        Foreground="White"
+                        Text="{Binding TitleText}" />
+                </Border>
+                <StackPanel
+                    Grid.Row="1"
+                    Margin="20,16,17,10"
+                    hc:TitleElement.TitleWidth="168">
+                    <TextBox
+                        hc:InfoElement.Placeholder="请输入零件编号"
+                        hc:TitleElement.Title="零件编号"
+                        hc:TitleElement.TitlePlacement="Left"
+                        IsEnabled="{Binding IsAdd}"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding ProductedInfo.ProductId, Mode=TwoWay}" />
+                    <TextBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Placeholder="请输入零件名称"
+                        hc:TitleElement.Title="零件名称"
+                        hc:TitleElement.TitlePlacement="Left"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding ProductedInfo.ProductName, Mode=TwoWay}" />
+                    <TextBox
+                        Margin="0,6,0,0"
+                        hc:InfoElement.Placeholder="请输入备注"
+                        hc:TitleElement.Title="备注"
+                        hc:TitleElement.TitlePlacement="Left"
+                        Style="{StaticResource TextBoxExtend}"
+                        Text="{Binding ProductedInfo.Remark, Mode=TwoWay}" />
+                </StackPanel>
+                <StackPanel
+                    Grid.Row="2"
+                    Margin="20"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="100"
+                        Command="{Binding SubmitCommand}"
+                        Content="提交"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding ClosedCommand}"
+                        Content="关闭"
+                        Style="{StaticResource ButtonInfo}" />
+                </StackPanel>
+            </Grid>
+        </hc:SimplePanel>
+    </hc:DialogContainer>
+</UserControl>

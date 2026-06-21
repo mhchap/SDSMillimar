@@ -1,0 +1,32 @@
+﻿<Application
+    x:Class="SDSMillimar.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:SDSMillimar"
+    StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/MhcWpfDesign;component/Themes.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/SkinDefault.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/HandyControl;component/Themes/Theme.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--  主题色  -->
+            <Color x:Key="PrimaryColor">#095fa8</Color>
+            <Color x:Key="SecondaryColor">#FF4CAF50</Color>
+            <Color x:Key="WarningColor">#FFFFC107</Color>
+            <Color x:Key="AlarmColor">#D31111</Color>
+            <Color x:Key="BgColor">#D0C9C9</Color>
+
+
+            <!--  用 SolidColorBrush 包装 Color  -->
+            <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+            <SolidColorBrush x:Key="SecondaryBrush" Color="{StaticResource SecondaryColor}" />
+            <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+            <SolidColorBrush x:Key="AlarmBrush" Color="{StaticResource AlarmColor}" />
+            <SolidColorBrush x:Key="BgBrush" Color="{StaticResource BgColor}" />
+
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>

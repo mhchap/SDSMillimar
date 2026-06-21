@@ -1,0 +1,152 @@
+﻿<!--  零件管理  -->
+<Window
+    x:Class="SDSMillimar.View.ProductedView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+    xmlns:local="clr-namespace:SDSMillimar.View"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:tk="clr-namespace:SDSMillimar.Utils"
+    xmlns:vm="clr-namespace:SDSMillimar.ViewModel"
+    Title="零件管理"
+    Width="1000"
+    Height="600"
+    hc:Dialog.Token="{x:Static tk:DialogTokens.ProductDetail}"
+    Background="{DynamicResource RegionBrush}"
+    WindowStartupLocation="CenterOwner"
+    mc:Ignorable="d">
+    <i:Interaction.Triggers>
+        <i:EventTrigger>
+            <i:InvokeCommandAction Command="{Binding LoadedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
+    <Window.DataContext>
+        <vm:ProductedViewModel />
+    </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70" />
+            <RowDefinition />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <hc:Card
+            Margin="8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="auto" />
+                </Grid.ColumnDefinitions>
+                <Grid Margin="8,0,0,0" HorizontalAlignment="Left">
+                    <hc:TextBox
+                        Width="380"
+                        Height="30"
+                        hc:InfoElement.Placeholder="请输入关键字模糊查询"
+                        hc:InfoElement.Title="关键字"
+                        hc:InfoElement.TitlePlacement="Left"
+                        hc:InfoElement.TitleWidth="auto"
+                        Text="{Binding Keyword}" />
+                </Grid>
+                <StackPanel
+                    Grid.Column="1"
+                    Margin="0,0,8,0"
+                    Orientation="Horizontal">
+
+                    <Button
+                        Width="100"
+                        Margin="5"
+                        Command="{Binding QueryCommand}"
+                        Content="查询"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="5"
+                        Command="{Binding ResetKeywordCommand}"
+                        Content="重置" />
+                </StackPanel>
+            </Grid>
+
+
+
+        </hc:Card>
+        <hc:Card
+            Grid.Row="1"
+            Margin="8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto" />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <StackPanel
+                    Margin="8"
+                    HorizontalAlignment="Right"
+                    Orientation="Horizontal">
+                    <Button
+                        Width="100"
+                        Command="{Binding AddProductedCommand}"
+                        Content="新增零件"
+                        Style="{StaticResource ButtonPrimary}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding EditProductedCommand}"
+                        Content="编辑"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonInfo}" />
+                    <Button
+                        Width="100"
+                        Margin="8,0,0,0"
+                        Command="{Binding DeleteProductedCommand}"
+                        Content="删除"
+                        IsEnabled="{Binding BtnControlCan}"
+                        Style="{StaticResource ButtonDanger}" />
+                </StackPanel>
+                <DataGrid
+                    Grid.Row="1"
+                    hc:DataGridAttach.CanUnselectAllWithBlankArea="True"
+                    AutoGenerateColumns="False"
+                    HeadersVisibility="Column"
+                    ItemsSource="{Binding Datas}"
+                    RowHeaderWidth="60"
+                    SelectedItem="{Binding SelectedData, Mode=TwoWay}">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Binding="{Binding ProductId}" Header="零件编号" />
+                        <DataGridTextColumn Binding="{Binding ProductName}" Header="零件名称" />
+                        <DataGridTextColumn Binding="{Binding CreateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="创建时间" />
+                        <DataGridTextColumn Binding="{Binding UpdateTime, StringFormat={}{0:yyyy-MM-dd HH:mm:ss}}" Header="修改时间" />
+                        <DataGridTextColumn Binding="{Binding Remark}" Header="备注" />
+                    </DataGrid.Columns>
+                </DataGrid>
+                <hc:LoadingCircle Grid.Row="1" Visibility="{Binding IsLoading, Converter={StaticResource BoolToVisibility}}" />
+            </Grid>
+
+        </hc:Card>
+        <hc:Card
+            Grid.Row="2"
+            Margin="8,0,8,8"
+            BorderThickness="0"
+            Effect="{StaticResource EffectShadow2}">
+            <hc:Pagination
+                Margin="8"
+                HorizontalAlignment="Right"
+                IsJumpEnabled="True"
+                MaxPageCount="{Binding MaxPageCount}"
+                PageIndex="{Binding PageIndex}">
+                <hc:Interaction.Triggers>
+                    <hc:EventTrigger EventName="PageUpdated">
+                        <hc:EventToCommand Command="{Binding PageUpdatedCommand}" PassEventArgsToCommand="True" />
+                    </hc:EventTrigger>
+                </hc:Interaction.Triggers>
+            </hc:Pagination>
+        </hc:Card>
+    </Grid>
+</Window>

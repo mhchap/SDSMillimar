@@ -1,0 +1,126 @@
+﻿<UserControl
+    x:Class="SDSMillimar.UserControls.ProbeControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:cm="clr-namespace:SDSMillimar.Common"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:hc="https://handyorg.github.io/handycontrol"
+    xmlns:local="clr-namespace:SDSMillimar.UserControls"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="450"
+    d:DesignWidth="800"
+    mc:Ignorable="d">
+    <Grid Cursor="Hand" MouseLeftButtonUp="Grid_MouseLeftButtonUp">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition />
+            <!--<RowDefinition Height="auto" />-->
+        </Grid.RowDefinitions>
+        <Grid Width="204" Background="{Binding ProbeBackground, RelativeSource={RelativeSource AncestorType=UserControl}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <!--  左  -->
+            <TextBlock
+                Margin="8,3,0,3"
+                VerticalAlignment="Center"
+                Foreground="White"
+                Text="{Binding Title, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+
+            <!--  右  -->
+            <TextBlock
+                Grid.Column="1"
+                Margin="0,3,8,3"
+                VerticalAlignment="Center"
+                Foreground="White"
+                Text="{Binding Unit, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+        </Grid>
+        <Border
+            Grid.Row="1"
+            Margin="0,-2,0,0"
+            HorizontalAlignment="Center"
+            BorderBrush="{Binding ProbeBackground, RelativeSource={RelativeSource AncestorType=UserControl}}"
+            BorderThickness="2">
+
+            <Canvas
+                Width="200"
+                Height="50"
+                RenderTransformOrigin="0.5,0.5">
+                <Canvas.RenderTransform>
+                    <ScaleTransform ScaleX="{Binding Direction, RelativeSource={RelativeSource AncestorType=UserControl}}" />
+                </Canvas.RenderTransform>
+
+                <!--  杆  -->
+                <Rectangle
+                    Canvas.Top="18"
+                    Width="140"
+                    Height="16">
+                    <Rectangle.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="#9f9ea3" />
+                            <!--  顶部亮  -->
+                            <GradientStop Offset="1" Color="#44413b" />
+                            <!--  底部暗  -->
+                        </LinearGradientBrush>
+                    </Rectangle.Fill>
+                </Rectangle>
+                <!--  波纹段  -->
+                <!--  波纹缓冲段  -->
+                <Path
+                    Canvas.Top="0"
+                    Data="                              M 140,18                              Q 145,14 150,18             Q 155,22 160,18             Q 165,14 170,18             Q 175,22 180,18             L 180,34             Q 175,30 170,34             Q 165,38 160,34             Q 155,30 150,34             Q 145,38 140,34             Z"
+                    StrokeThickness="1">
+                    <Path.Fill>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Offset="0" Color="#d9314a" />
+                            <GradientStop Offset="1" Color="#751823" />
+                        </LinearGradientBrush>
+                    </Path.Fill>
+
+                </Path>
+
+
+                <Canvas Canvas.Top="6">
+                    <!--  三角形主体  -->
+                    <Polygon Points="180,12 200,20 180,28" StrokeThickness="1">
+                        <Polygon.Fill>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                <GradientStop Offset="0" Color="#9f9ea3" />
+                                <!--  左上亮  -->
+                                <GradientStop Offset="1" Color="#44413b" />
+                                <!--  右下暗  -->
+                            </LinearGradientBrush>
+                        </Polygon.Fill>
+                    </Polygon>
+
+                    <!--  尖端小圆点  -->
+                    <Ellipse
+                        Canvas.Left="196"
+                        Canvas.Top="18"
+                        Width="4"
+                        Height="4"
+                        Fill="#555"
+                        Stroke="#555"
+                        StrokeThickness="1" />
+                </Canvas>
+            </Canvas>
+        </Border>
+        <!--<hc:ComboBox
+            Grid.Row="2"
+            Width="204"
+            hc:InfoElement.Necessary="True"
+            hc:InfoElement.Placeholder="输入零件编号模糊匹配"
+            hc:InfoElement.ShowClearButton="True"
+            hc:InfoElement.Title="选择通道"
+            hc:TitleElement.TitlePlacement="Left"
+            AutoComplete="True"
+            DisplayMemberPath="Value"
+            IsEditable="False"
+            ItemsSource="{Binding Source={x:Static cm:GlobalSession.Instance}, Path=CurrentChannelOptionsModel}"
+            SelectedItem="{Binding SelectedChannel, RelativeSource={RelativeSource AncestorType=UserControl}, Mode=TwoWay}"
+            SelectedValue="{Binding ChannelIndex, Mode=TwoWay}"
+            SelectedValuePath="Key" />-->
+    </Grid>
+</UserControl>
